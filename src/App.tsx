@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { MainContent } from '@/components/MainContent/MainContent';
-import { useFetchQuestions } from '@/hooks/useFetchQuestions';
+import { useQuestions } from '@/hooks/useQuestions';
 import { Loader } from '@/components/Loader';
 import { Error } from '@/components/Error';
 import { StartScreen } from '@/components/StartScreen';
+import { Question } from '@/components/Question';
 
 export const App = () => {
-  const { status, fetchQuestions } = useFetchQuestions();
+  const { status, fetchQuestions, numQuestions, startQuiz } = useQuestions();
+
   useEffect(() => {
     fetchQuestions();
   });
@@ -18,7 +20,10 @@ export const App = () => {
       <MainContent>
         {status === 'loading' && <Loader />}
         {status === 'error' && <Error />}
-        {status === 'ready' && <StartScreen />}
+        {status === 'ready' && (
+          <StartScreen startQuiz={startQuiz} numQuestions={numQuestions} />
+        )}
+        {status === 'active' && <Question />}
       </MainContent>
     </div>
   );

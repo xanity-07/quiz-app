@@ -2,7 +2,7 @@ import { initialState, questionReducer } from '@/reducers/questionReducer';
 import type { Question } from '@/types';
 import { useReducer } from 'react';
 
-export const useFetchQuestions = () => {
+export const useQuestions = () => {
   const [state, dispatch] = useReducer(questionReducer, initialState);
   const { questions, status } = state;
 
@@ -20,5 +20,10 @@ export const useFetchQuestions = () => {
       console.log(error);
     }
   };
-  return { questions, status, fetchQuestions };
+
+  const numQuestions = questions.length;
+  const startQuiz = () => {
+    dispatch({ type: 'start' });
+  };
+  return { questions, status, fetchQuestions, startQuiz, numQuestions };
 };

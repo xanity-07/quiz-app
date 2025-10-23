@@ -12,6 +12,9 @@ type Actions =
     }
   | {
       type: 'dataFailed';
+    }
+  | {
+      type: 'start';
     };
 
 export const initialState: State = {
@@ -31,6 +34,12 @@ export const questionReducer = (state: State, action: Actions): State => {
       return {
         ...state,
         status: 'error',
+      };
+
+    case 'start':
+      return {
+        ...state,
+        status: 'active',
       };
 
     default:

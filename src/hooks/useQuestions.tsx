@@ -4,7 +4,7 @@ import { useReducer } from 'react';
 
 export const useQuestions = () => {
   const [state, dispatch] = useReducer(questionReducer, initialState);
-  const { questions, status } = state;
+  const { questions, status, index, answer, points, highscore } = state;
 
   const fetchQuestions = async () => {
     try {
@@ -22,8 +22,42 @@ export const useQuestions = () => {
   };
 
   const numQuestions = questions.length;
+  const maxPossiblePoints = questions.reduce((cur, acc) => cur + acc.points, 0);
+
   const startQuiz = () => {
     dispatch({ type: 'start' });
   };
-  return { questions, status, fetchQuestions, startQuiz, numQuestions };
+
+  const onAnswer = (index: number) => {
+    dispatch({ type: 'newAnswer', payload: index });
+  };
+
+  const nextQuestion = () => {
+    dispatch({ type: 'nextQuestion' });
+  };
+
+  const onFinished = () => {
+    dispatch({ type: 'finished' });
+  };
+
+  const handleReset = () => {
+    dispatch({ type: 'reset' });
+  };
+
+  return {
+    questions,
+    status,
+    fetchQuestions,
+    startQuiz,
+    numQuestions,
+    index,
+    onAnswer,
+    answer,
+    nextQuestion,
+    points,
+    maxPossiblePoints,
+    onFinished,
+    highscore,
+    handleReset,
+  };
 };

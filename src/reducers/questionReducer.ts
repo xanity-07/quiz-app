@@ -3,6 +3,10 @@ import type { Question } from '@/types';
 interface State {
   questions: Question[];
   status: 'loading' | 'ready' | 'active' | 'finished' | 'error';
+  index: number;
+  answer: number | null;
+  points: number;
+  highscore: number;
 }
 
 type Actions =
@@ -15,11 +19,28 @@ type Actions =
     }
   | {
       type: 'start';
+    }
+  | {
+      type: 'newAnswer';
+      payload: number | null;
+    }
+  | {
+      type: 'nextQuestion';
+    }
+  | {
+      type: 'finished';
+    }
+  | {
+      type: 'reset';
     };
 
 export const initialState: State = {
   questions: [],
   status: 'loading',
+  index: 0,
+  answer: null,
+  points: 0,
+  highscore: 0,
 };
 
 export const questionReducer = (state: State, action: Actions): State => {
@@ -40,8 +61,45 @@ export const questionReducer = (state: State, action: Actions): State => {
       return {
         ...state,
         status: 'active',
+        index: 0,
+        answer: null,
+        points: 0,
       };
 
+    case 'newAnswer': {
+      const question = state.questions[state.index];
+      if (!question) return state;
+
+      const isCorrect = question.correctOption === action.payload;
+
+      return {
+        ...state,
+        answer: action.payload,
+        points: isCorrect ? state.points + question.points : state.points,
+      };
+    }
+    case 'nextQuestion':
+      return {
+        ...state,
+        index: state.index + 1,
+        answer: null,
+      };
+    case 'finished':
+      return {
+        ...state,
+        status: 'finished',
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
+      };
+
+    case 'reset':
+      return {
+        ...state,
+        index: 0,
+        answer: null,
+        points: 0,
+        status: 'ready',
+      };
     default:
       return { ...state };
   }

@@ -5,14 +5,33 @@ import { useQuestions } from '@/hooks/useQuestions';
 import { Loader } from '@/components/Loader';
 import { Error } from '@/components/Error';
 import { StartScreen } from '@/components/StartScreen';
-import { Question } from '@/components/Question';
+import { Questions } from '@/components/Question';
+import { NextButton } from '@/components/NextButton';
+import { ProgressBar } from '@/components/ProgressBar';
+import { Finished } from '@/components/Finished';
 
 export const App = () => {
-  const { status, fetchQuestions, numQuestions, startQuiz } = useQuestions();
+  const {
+    handleReset,
+    questions,
+    status,
+    fetchQuestions,
+    numQuestions,
+    startQuiz,
+    index,
+    onAnswer,
+    answer,
+    nextQuestion,
+    points,
+    maxPossiblePoints,
+    onFinished,
+    highscore,
+  } = useQuestions();
 
   useEffect(() => {
     fetchQuestions();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div className='app'>
       <Header />
@@ -23,7 +42,38 @@ export const App = () => {
         {status === 'ready' && (
           <StartScreen startQuiz={startQuiz} numQuestions={numQuestions} />
         )}
-        {status === 'active' && <Question />}
+        {status === 'active' && (
+          <>
+            <ProgressBar
+              answer={answer}
+              maxPossiblePoints={maxPossiblePoints}
+              points={points}
+              numQuestions={numQuestions}
+              index={index}
+            />
+            <Questions
+              question={questions[index]}
+              onAnswer={onAnswer}
+              answer={answer}
+            />
+            <NextButton
+              nextQuestion={nextQuestion}
+              answer={answer}
+              index={index}
+              numQuestions={numQuestions}
+              onFinished={onFinished}
+            />
+          </>
+        )}
+
+        {status === 'finished' && (
+          <Finished
+            points={points}
+            maxPossiblePoints={maxPossiblePoints}
+            highscore={highscore}
+            handleReset={handleReset}
+          />
+        )}
       </MainContent>
     </div>
   );

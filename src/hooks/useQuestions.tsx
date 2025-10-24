@@ -4,7 +4,8 @@ import { useReducer } from 'react';
 
 export const useQuestions = () => {
   const [state, dispatch] = useReducer(questionReducer, initialState);
-  const { questions, status, index, answer, points, highscore } = state;
+  const { questions, status, index, answer, points, highscore, secconds } =
+    state;
 
   const fetchQuestions = async () => {
     try {
@@ -44,6 +45,10 @@ export const useQuestions = () => {
     dispatch({ type: 'reset' });
   };
 
+  const handleTimer = () => {
+    dispatch({ type: 'ticking' });
+  };
+
   return {
     questions,
     status,
@@ -59,5 +64,7 @@ export const useQuestions = () => {
     onFinished,
     highscore,
     handleReset,
+    handleTimer,
+    secconds,
   };
 };

@@ -1,5 +1,4 @@
 import type { Question } from '@/types';
-
 interface State {
   questions: Question[];
   status: 'loading' | 'ready' | 'active' | 'finished' | 'error';
@@ -7,8 +6,9 @@ interface State {
   answer: number | null;
   points: number;
   highscore: number;
+  secconds: number | null;
 }
-
+const SECS_PER_QUESTION = 10;
 type Actions =
   | {
       type: 'dataRecieved';
@@ -32,6 +32,9 @@ type Actions =
     }
   | {
       type: 'reset';
+    }
+  | {
+      type: 'ticking';
     };
 
 export const initialState: State = {
@@ -41,6 +44,7 @@ export const initialState: State = {
   answer: null,
   points: 0,
   highscore: 0,
+  secconds: null,
 };
 
 export const questionReducer = (state: State, action: Actions): State => {
@@ -64,6 +68,7 @@ export const questionReducer = (state: State, action: Actions): State => {
         index: 0,
         answer: null,
         points: 0,
+        secconds: state.questions.length * SECS_PER_QUESTION,
       };
 
     case 'newAnswer': {
@@ -94,12 +99,22 @@ export const questionReducer = (state: State, action: Actions): State => {
 
     case 'reset':
       return {
-        ...state,
-        index: 0,
-        answer: null,
-        points: 0,
+        ...initialState,
+        questions: state.questions,
         status: 'ready',
       };
+    case 'ticking': {
+      if (state.secconds === null || state.secconds <= 0) return state;
+      const newSeccond = state.secconds - 1;
+      const isFinished = newSeccond === 0;
+
+      return {
+        ...state,
+        secconds: newSeccond,
+        status: isFinished ? 'finished' : state.status,
+      };
+    }
+
     default:
       return { ...state };
   }

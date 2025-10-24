@@ -9,6 +9,8 @@ import { Questions } from '@/components/Question';
 import { NextButton } from '@/components/NextButton';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Finished } from '@/components/Finished';
+import { Footer } from './components/Footer';
+import { QuizTimer } from './components/QuizTimer';
 
 export const App = () => {
   const {
@@ -26,6 +28,8 @@ export const App = () => {
     maxPossiblePoints,
     onFinished,
     highscore,
+    handleTimer,
+    secconds,
   } = useQuestions();
 
   useEffect(() => {
@@ -56,13 +60,16 @@ export const App = () => {
               onAnswer={onAnswer}
               answer={answer}
             />
-            <NextButton
-              nextQuestion={nextQuestion}
-              answer={answer}
-              index={index}
-              numQuestions={numQuestions}
-              onFinished={onFinished}
-            />
+            <Footer>
+              <QuizTimer handleTimer={handleTimer} secconds={secconds} />
+              <NextButton
+                nextQuestion={nextQuestion}
+                answer={answer}
+                index={index}
+                numQuestions={numQuestions}
+                onFinished={onFinished}
+              />
+            </Footer>
           </>
         )}
 
